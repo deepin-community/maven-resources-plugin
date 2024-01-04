@@ -27,6 +27,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Properties;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
@@ -45,8 +46,6 @@ import org.codehaus.plexus.component.repository.exception.ComponentLookupExcepti
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.ContextException;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
-import org.codehaus.plexus.util.ReaderFactory;
-import org.codehaus.plexus.util.StringUtils;
 
 /**
  * Copy resources for the main source code to the main output directory. Always uses the project.build.resources element
@@ -64,10 +63,19 @@ public class ResourcesMojo
 {
 
     /**
-     * The character encoding scheme to be applied when filtering resources.
+     * The character encoding to use when reading and writing filtered resources.
      */
     @Parameter( defaultValue = "${project.build.sourceEncoding}" )
     protected String encoding;
+
+    /**
+     * The character encoding to use when reading and writing filtered properties files.
+     * If not specified, it will default to the value of the "encoding" parameter.
+     *
+     * @since 3.2.0
+     */
+    @Parameter
+    protected String propertiesEncoding;
 
     /**
      * The output directory into which to copy the resources.
@@ -258,7 +266,7 @@ public class ResourcesMojo
     /**
      * @since 2.4
      */
-    private List<MavenResourcesFiltering> mavenFilteringComponents = new ArrayList<MavenResourcesFiltering>();
+    private List<MavenResourcesFiltering> mavenFilteringComponents = new ArrayList<>();
 
     /**
      * stop searching endToken at the end of line
@@ -302,21 +310,21 @@ public class ResourcesMojo
             return;
         }
 
-        if ( StringUtils.isEmpty( encoding ) && isFilteringEnabled( getResources() ) )
+        if ( StringUtils.isBlank( encoding ) && isFilteringEnabled( getResources() ) )
         {
-            getLog().warn( "File encoding has not been set, using platform encoding " + ReaderFactory.FILE_ENCODING
-                + ", i.e. build is platform dependent!" );
-            getLog().warn( "Please take a look into the FAQ: https://maven.apache.org/general.html#encoding-warning" );
+            getLog().warn( "File encoding has not been set, using platform encoding "
+                + System.getProperty( "file.encoding" )
+                + ". Build is platform dependent!" );
+            getLog().warn( "See https://maven.apache.org/general.html#encoding-warning" );
         }
 
         try
         {
-
             List<String> combinedFilters = getCombinedFiltersList();
 
             MavenResourcesExecution mavenResourcesExecution =
                 new MavenResourcesExecution( getResources(), getOutputDirectory(), project, encoding, combinedFilters,
-                                             Collections.<String>emptyList(), session );
+                                             Collections.emptyList(), session );
 
             mavenResourcesExecution.setEscapeWindowsPaths( escapeWindowsPaths );
 
@@ -337,6 +345,9 @@ public class ResourcesMojo
 
             // if these are NOT set, just use the defaults, which are '${*}' and '@'.
             mavenResourcesExecution.setDelimiters( delimiters, useDefaultDelimiters );
+
+            // Handle MRESOURCES-171
+            mavenResourcesExecution.setPropertiesEncoding( propertiesEncoding );
 
             if ( nonFilteredFileExtensions != null )
             {
@@ -432,7 +443,7 @@ public class ResourcesMojo
         }
         else
         {
-            List<String> result = new ArrayList<String>();
+            List<String> result = new ArrayList<>();
 
             if ( useBuildFilters && buildFilters != null && !buildFilters.isEmpty() )
             {

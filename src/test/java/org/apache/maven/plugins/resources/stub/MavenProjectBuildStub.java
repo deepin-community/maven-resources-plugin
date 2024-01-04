@@ -63,9 +63,9 @@ public class MavenProjectBuildStub
         super( key );
 
         build = new Build();
-        fileList = new ArrayList<String>();
-        directoryList = new ArrayList<String>();
-        dataMap = new HashMap<String, String>();
+        fileList = new ArrayList<>();
+        directoryList = new ArrayList<>();
+        dataMap = new HashMap<>();
         setupBuild();
     }
 
@@ -240,7 +240,7 @@ public class MavenProjectBuildStub
         }
     }
 
-    private void createFiles( String parent, String testparent )
+    private void createFiles( String parent, String testparent ) throws IOException
     {
         File currentFile;
 
@@ -278,36 +278,21 @@ public class MavenProjectBuildStub
 
             if ( !currentFile.exists() )
             {
-                try
-                {
-                    currentFile.createNewFile();
-                    populateFile( currentFile );
-                }
-                catch ( IOException io )
-                {
-                    //TODO: handle exception
-                }
+                currentFile.createNewFile();
+                populateFile( currentFile );
             }
         }
     }
 
-    private void populateFile( File file )
+    private void populateFile( File file ) throws IOException
     {
-        FileOutputStream outputStream;
         String data = dataMap.get( file.getName() );
 
         if ( ( data != null ) && file.exists() )
         {
-            try
+            try ( FileOutputStream outputStream = new FileOutputStream( file ) )
             {
-                outputStream = new FileOutputStream( file );
                 outputStream.write( data.getBytes() );
-                outputStream.flush();
-                outputStream.close();
-            }
-            catch ( IOException ex )
-            {
-                // TODO: handle exception here
             }
         }
     }

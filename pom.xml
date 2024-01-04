@@ -25,20 +25,19 @@ under the License.
   <parent>
     <artifactId>maven-plugins</artifactId>
     <groupId>org.apache.maven.plugins</groupId>
-    <version>31</version>
-    <relativePath>../../pom/maven/maven-plugins/pom.xml</relativePath>
+    <version>36</version>
   </parent>
 
   <artifactId>maven-resources-plugin</artifactId>
-  <version>3.1.0</version>
+  <version>3.3.0</version>
   <packaging>maven-plugin</packaging>
 
   <name>Apache Maven Resources Plugin</name>
   <description>
     The Resources Plugin handles the copying of project resources to the output
     directory. There are two different kinds of resources: main resources and test resources. The
-    difference is that the main resources are the resources associated to the main
-    source code while the test resources are associated to the test source code.
+    difference is that the main resources are the resources associated with the main
+    source code while the test resources are associated with the test source code.
     Thus, this allows the separation of resources for the main source code and its
     unit tests.
   </description>
@@ -52,7 +51,7 @@ under the License.
     <connection>scm:git:https://gitbox.apache.org/repos/asf/maven-resources-plugin.git</connection>
     <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/maven-resources-plugin.git</developerConnection>
     <url>https://github.com/apache/maven-resources-plugin/tree/${project.scm.tag}</url>
-    <tag>maven-resources-plugin-3.1.0</tag>
+    <tag>maven-resources-plugin-3.3.0</tag>
   </scm>
   <issueManagement>
     <system>JIRA</system>
@@ -60,20 +59,20 @@ under the License.
   </issueManagement>
   <ciManagement>
     <system>Jenkins</system>
-    <url>https://builds.apache.org/job/maven-box/job/maven-resources-plugin/</url>
+    <url>https://ci-builds.apache.org/job/Maven/job/maven-box/job/maven-resources-plugin/</url>
   </ciManagement>
   <distributionManagement>
     <site>
       <id>apache.website</id>
-      <url>scm:svn:https://svn.apache.org/repos/infra/websites/production/maven/components/${maven.site.path}</url>
+      <url>scm:svn:https://svn.apache.org/repos/asf/maven/website/components/${maven.site.path}</url>
     </site>
   </distributionManagement>
 
   <properties>
-    <mavenFilteringVersion>3.1.1</mavenFilteringVersion>
-    <mavenVersion>3.0</mavenVersion>
-    <surefire.version>2.21.0</surefire.version>
-    <javaVersion>7</javaVersion>
+    <mavenFilteringVersion>3.3.0</mavenFilteringVersion>
+    <mavenVersion>3.2.5</mavenVersion>
+    <javaVersion>8</javaVersion>
+    <project.build.outputTimestamp>2022-07-23T17:48:51Z</project.build.outputTimestamp>
   </properties>
 
   <contributors>
@@ -87,30 +86,48 @@ under the License.
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-api</artifactId>
       <version>${mavenVersion}</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-core</artifactId>
       <version>${mavenVersion}</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-model</artifactId>
       <version>${mavenVersion}</version>
+      <scope>provided</scope>
     </dependency>
-
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-settings</artifactId>
+      <version>${mavenVersion}</version>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>org.apache.maven.plugin-tools</groupId>
       <artifactId>maven-plugin-annotations</artifactId>
       <scope>provided</scope>
     </dependency>
-
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
-      <artifactId>plexus-utils</artifactId>
-      <version>3.1.0</version>
+      <artifactId>plexus-component-annotations</artifactId>
+      <scope>provided</scope>
     </dependency>
-
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-interpolation</artifactId>
+      <version>1.26</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.sisu</groupId>
+      <artifactId>org.eclipse.sisu.plexus</artifactId>
+      <version>0.3.5</version>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>org.apache.maven.shared</groupId>
       <artifactId>maven-filtering</artifactId>
@@ -120,14 +137,14 @@ under the License.
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
-      <version>2.5</version>
+      <version>2.11.0</version>
       <scope>compile</scope>
     </dependency>
-
     <dependency>
-      <groupId>org.codehaus.plexus</groupId>
-      <artifactId>plexus-interpolation</artifactId>
-      <version>1.24</version>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>3.12.0</version>
+      <scope>compile</scope>
     </dependency>
 
     <dependency>
@@ -139,15 +156,28 @@ under the License.
     <dependency>
       <groupId>org.apache.maven.plugin-testing</groupId>
       <artifactId>maven-plugin-testing-harness</artifactId>
-      <version>2.1</version>
+      <version>3.3.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.12</version>
+      <version>4.13.2</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
+      <version>3.4.2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.resolver</groupId>
+      <artifactId>maven-resolver-api</artifactId>
+      <version>1.6.3</version>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 
   <profiles>
@@ -195,6 +225,7 @@ under the License.
           <plugin>
             <groupId>org.codehaus.plexus</groupId>
             <artifactId>plexus-component-metadata</artifactId>
+            <version>2.1.1</version>
             <executions>
               <execution>
                 <goals>

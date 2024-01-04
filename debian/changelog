@@ -1,3 +1,15 @@
+maven-resources-plugin (3.3.0-1) unstable; urgency=medium
+
+  * Team upload.
+  * New upstream release
+    - Removed the patch
+    - Depend on libmaven-filtering-java (>= 3.3.0)
+    - New dependency on libplexus-component-annotations-java
+    - Depend on the maven-plugins parent pom
+    - Modified the pom to set the version for all dependencies
+
+ -- Emmanuel Bourg <ebourg@apache.org>  Fri, 16 Dec 2022 14:25:50 +0100
+
 maven-resources-plugin (3.1.0-1) unstable; urgency=medium
 
   * Team upload.
